@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartU Competitor Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #2E8B57, #32CD32);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            overflow-x: auto;
+        }
+        
+        .nav-tab {
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #495057;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .nav-tab:hover {
+            background: #e9ecef;
+            color: #2E8B57;
+        }
+        
+        .nav-tab.active {
+            background: #2E8B57;
+            color: white;
+            border-bottom: 3px solid #228B22;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .competitor-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #2E8B57;
+            transition: transform 0.3s ease;
+        }
+        
+        .competitor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .competitor-name {
+            font-size: 1.5em;
+            color: #2E8B57;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2E8B57;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .swot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .swot-card {
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+        }
+        
+        .swot-strengths { background: linear-gradient(135deg, #4CAF50, #45a049); }
+        .swot-weaknesses { background: linear-gradient(135deg, #f44336, #d32f2f); }
+        .swot-opportunities { background: linear-gradient(135deg, #2196F3, #1976D2); }
+        .swot-threats { background: linear-gradient(135deg, #FF9800, #F57C00); }
+        
+        .feature-comparison {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .comparison-table th {
+            background: #2E8B57;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .comparison-table tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .status-good { color: #4CAF50; font-weight: bold; }
+        .status-average { color: #FF9800; font-weight: bold; }
+        .status-poor { color: #f44336; font-weight: bold; }
+        
+        .section-title {
+            font-size: 1.8em;
+            color: #2E8B57;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #2E8B57;
+            padding-bottom: 10px;
+        }
+        
+        .insight-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .insight-box h3 {
+            margin-bottom: 10px;
+        }
+        
+        .recommendation {
+            background: #e8f5e8;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .recommendation h4 {
+            color: #2E8B57;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌾 SmartU Competitor Analysis</h1>
+            <p>Comprehensive Analysis of Indian AgriTech Market Leaders</p>
+        </div>
+        
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('overview')">Market Overview</button>
+            <button class="nav-tab" onclick="showTab('competitors')">Key Competitors</button>
+            <button class="nav-tab" onclick="showTab('business-analysis')">Business Analysis</button>
+            <button class="nav-tab" onclick="showTab('marketing')">Marketing Analysis</button>
+            <button class="nav-tab" onclick="showTab('swot')">SWOT Analysis</button>
+            <button class="nav-tab" onclick="showTab('recommendations')">Strategic Recommendations</button>
+        </div>
+        
+        <div id="overview" class="tab-content active">
+            <h2 class="section-title">Indian AgriTech Market Overview</h2>
+            
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-value">₹8,800Cr</div>
+                    <div class="metric-label">Market Size (2024)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">25%</div>
+                    <div class="metric-label">Annual Growth Rate</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">600M</div>
+                    <div class="metric-label">Farmers in India</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">1,200+</div>
+                    <div class="metric-label">AgriTech Startups</div>
+                </div>
+            </div>
+            
+            <div class="insight-box">
+                <h3>🎯 Market Positioning Context</h3>
+                <p>SmartU operates in a rapidly growing sector where <strong>WhatsApp-based farmer engagement</strong> is becoming increasingly important. The market is shifting from traditional dealer-dependent models to direct digital engagement platforms.</p>
+            </div>
+            
+            <div class="competitor-card">
+                <h3>Market Segments in AgriTech</h3>
+                <ul>
+                    <li><strong>Marketing & Engagement:</strong> SmartU, Krishify, BharatAgri</li>
+                    <li><strong>Input Supply Chain:</strong> AgroStar, BigHaat</li>
+                    <li><strong>Farm-to-Fork:</strong> Ninjacart, Crofarm, WayCool</li>
+                    <li><strong>Advisory Services:</strong> CropIn, Fasal, Intello Labs</li>
+                    <li><strong>Financial Services:</strong> Samunnati, Jai Kisan</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div id="competitors" class="tab-content">
+            <h2 class="section-title">Key Competitors Analysis</h2>
+            
+
+            
+            <div class="competitor-card">
+                <div class="competitor-name">🥈 AgroStar</div>
+                <p><strong>Business Model:</strong> Digital platform for agri-inputs and advisory</p>
+                <p><strong>Founded:</strong> 2013 | <strong>Funding:</strong> $50M+ | <strong>Farmers:</strong> 3M+</p>
+                <p><strong>Core Offering:</strong> Crop protection, seeds, fertilizers, and personalized advisory</p>
+                <p><strong>Geographic Focus:</strong> Maharashtra, Gujarat, Rajasthan, Karnataka</p>
+                <p><strong>Key Differentiator:</strong> Strong vernacular app and call center support</p>
+            </div>
+            
+            <div class="competitor-card">
+                <div class="competitor-name">🥉 BigHaat</div>
+                <p><strong>Business Model:</strong> Online marketplace for agri-inputs</p>
+                <p><strong>Founded:</strong> 2015 | <strong>Funding:</strong> $20M+ | <strong>Farmers:</strong> 500K+</p>
+                <p><strong>Core Offering:</strong> Seeds, fertilizers, pesticides, farm equipment</p>
+                <p><strong>Geographic Focus:</strong> Karnataka, Andhra Pradesh, Telangana, Tamil Nadu</p>
+                <p><strong>Key Differentiator:</strong> Strong logistics network and product variety</p>
+            </div>
+            
+            <div class="competitor-card">
+                <div class="competitor-name">📱 Kisan Network</div>
+                <p><strong>Business Model:</strong> Commodity trading and market linkage</p>
+                <p><strong>Founded:</strong> 2016 | <strong>Funding:</strong> $15M+ | <strong>Farmers:</strong> 350K+</p>
+                <p><strong>Core Offering:</strong> Grain trading, price discovery, market intelligence</p>
+                <p><strong>Geographic Focus:</strong> Punjab, Haryana, Rajasthan, UP</p>
+                <p><strong>Key Differentiator:</strong> Focus on grain trading and price transparency</p>
+            </div>
+            
+            <div class="competitor-card">
+                <div class="competitor-name">🚀 Krishify (Farmstock)</div>
+                <p><strong>Business Model:</strong> SaaS/community platform for agribusiness marketing</p>
+                <p><strong>Founded:</strong> 2018 | <strong>HQ:</strong> Gurgaon | <strong>Farmers:</strong> 12M+</p>
+                <p><strong>Core Offering:</strong> Farmverse, CRM, digital communities, Business Suite for targeted campaigns</p>
+                <p><strong>Geographic Focus:</strong> Pan-India network</p>
+                <p><strong>Key Differentiator:</strong> SMS/WhatsApp targeting to farmer segments - <strong>Direct competitor to SmartU</strong></p>
+            </div>
+            
+            <div class="competitor-card">
+                <div class="competitor-name">🌾 AgroStar (Kimaye)</div>
+                <p><strong>Business Model:</strong> Full-stack platform with advisory and e-commerce</p>
+                <p><strong>Founded:</strong> 2013 | <strong>HQ:</strong> Pune | <strong>Farmers:</strong> 5M+</p>
+                <p><strong>Core Offering:</strong> Farm advisory, 200+ branded inputs, 9,500+ Saathi stores</p>
+                <p><strong>Geographic Focus:</strong> Rajasthan, UP, MP (expanding)</p>
+                <p><strong>Key Differentiator:</strong> Personalized agronomy advice + home delivery network</p>
+            </div>
+            
+            <div class="competitor-card">
+                <div class="competitor-name">🤖 BharatAgri</div>
+                <p><strong>Business Model:</strong> AI-driven crop advisory + inputs e-commerce</p>
+                <p><strong>Founded:</strong> 2017 | <strong>HQ:</strong> Pune/Bangalore | <strong>Farmers:</strong> 10M annually</p>
+                <p><strong>Core Offering:</strong> Hyper-local advice (IVR, WhatsApp, app) + 10,000+ products</p>
+                <p><strong>Geographic Focus:</strong> Pan-India with focus on tech adoption</p>
+                <p><strong>Key Differentiator:</strong> AI-powered crop advisory with WhatsApp integration - <strong>Recent $4.3M funding</strong></p>
+            </div>
+        </div>
+        
+        <div id="business-analysis" class="tab-content">
+            <h2 class="section-title">Business Structure Analysis</h2>
+            
+            <div class="feature-comparison">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>DeHaat</th>
+                            <th>Krishify</th>
+                            <th>AgroStar</th>
+                            <th>BharatAgri</th>
+                            <th>SmartU</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Revenue Model</strong></td>
+                            <td>Commission + Product Sales</td>
+                            <td>SaaS + Marketing Services</td>
+                            <td>Product Sales + Advisory</td>
+                            <td>Advisory + E-commerce</td>
+                            <td>Marketing Services + Commission</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Customer Base</strong></td>
+                            <td>1M+ farmers</td>
+                            <td>12M+ farmers</td>
+                            <td>5M+ farmers</td>
+                            <td>10M+ farmers annually</td>
+                            <td>54M+ verified farmers</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Annual Revenue</strong></td>
+                            <td>₹500+ Cr</td>
+                            <td>₹50+ Cr (estimated)</td>
+                            <td>₹200+ Cr</td>
+                            <td>₹25+ Cr (estimated)</td>
+                            <td>Growing (Private)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Recent Funding</strong></td>
+                            <td>$115M+ (Series D)</td>
+                            <td>$10M+ (Series A)</td>
+                            <td>$50M+ (Series C)</td>
+                            <td>$4.3M (Series A)</td>
+                            <td>Growing (Private)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Geographic Coverage</strong></td>
+                            <td>11 states</td>
+                            <td>Pan-India</td>
+                            <td>3 states (expanding)</td>
+                            <td>Pan-India</td>
+                            <td>Pan-India</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Digital Engagement</strong></td>
+                            <td class="status-average">App + Call Center</td>
+                            <td class="status-good">SMS + WhatsApp + CRM</td>
+                            <td class="status-average">App + Call Center</td>
+                            <td class="status-good">AI + WhatsApp + IVR</td>
+                            <td class="status-good">WhatsApp + Regional</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Primary Focus</strong></td>
+                            <td>Full-stack services</td>
+                            <td class="status-good">Marketing Platform</td>
+                            <td>Advisory + E-commerce</td>
+                            <td>AI Advisory + Products</td>
+                            <td class="status-good">Precision Marketing</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="insight-box">
+                <h3>💡 Key Business Insights</h3>
+                <ul>
+                    <li><strong>SmartU's Advantage:</strong> Largest verified farmer database (54M vs competitors' 1-12M)</li>
+                    <li><strong>Direct Competition:</strong> Krishify is the closest competitor with similar WhatsApp/SMS marketing focus</li>
+                    <li><strong>Revenue Diversification:</strong> Most competitors mix product sales with services, SmartU focuses purely on marketing</li>
+                    <li><strong>Technology Integration:</strong> BharatAgri and SmartU both leverage WhatsApp, but SmartU has superior scale</li>
+                    <li><strong>Geographic Reach:</strong> SmartU, Krishify, and BharatAgri have pan-India presence vs regional players</li>
+                    <li><strong>Funding Landscape:</strong> Recent investments show strong investor confidence in agri-tech marketing platforms</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div id="marketing" class="tab-content">
+            <h2 class="section-title">Marketing Strategy Analysis</h2>
+            
+            <div class="competitor-card">
+                <h3>🎯 Digital Marketing Approaches</h3>
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">Krishify</div>
+                        <div class="metric-label">SaaS + WhatsApp/SMS</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">AgroStar</div>
+                        <div class="metric-label">Regional Influencers</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">BharatAgri</div>
+                        <div class="metric-label">AI-Powered + WhatsApp</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">SmartU</div>
+                        <div class="metric-label">WhatsApp + Direct Outreach</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="competitor-card">
+                <h3>📱 Social Media Presence Analysis</h3>
+                <table class="comparison-table">
+                    <tr>
+                        <th>Platform</th>
+                        <th>Krishify</th>
+                        <th>AgroStar</th>
+                        <th>BharatAgri</th>
+                        <th>Strategy Insight</th>
+                    </tr>
+                    <tr>
+                        <td>LinkedIn</td>
+                        <td class="status-good">Strong B2B focus</td>
+                        <td class="status-average">Moderate activity</td>
+                        <td class="status-good">Tech-forward content</td>
+                        <td>Professional networking for partnerships</td>
+                    </tr>
+                    <tr>
+                        <td>Facebook</td>
+                        <td class="status-average">Community building</td>
+                        <td class="status-good">High engagement</td>
+                        <td class="status-good">Educational content</td>
+                        <td>Primary farmer engagement platform</td>
+                    </tr>
+                    <tr>
+                        <td>Instagram</td>
+                        <td class="status-average">Visual storytelling</td>
+                        <td class="status-good">Video content</td>
+                        <td class="status-good">Success stories</td>
+                        <td>Growing importance for younger farmers</td>
+                    </tr>
+                    <tr>
+                        <td>WhatsApp</td>
+                        <td class="status-good">Core platform</td>
+                        <td class="status-average">Customer support</td>
+                        <td class="status-good">AI-powered advice</td>
+                        <td><strong>Key battleground for SmartU</strong></td>
+                    </tr>
+                    <tr>
+                        <td>SMS</td>
+                        <td class="status-good">Targeted campaigns</td>
+                        <td class="status-average">Basic notifications</td>
+                        <td class="status-poor">Limited use</td>
+                        <td>Krishify's secondary channel</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="recommendation">
+                <h4>Marketing Opportunity for SmartU</h4>
+                <p>Competitors are still relying on traditional app-based engagement and mass media. SmartU's WhatsApp-first, personalized approach is a clear differentiator that should be heavily marketed to agri-brands as a competitive advantage.</p>
+            </div>
+        </div>
+        
+        <div id="swot" class="tab-content">
+            <h2 class="section-title">SWOT Analysis - SmartU vs Competitors</h2>
+            
+            <div class="swot-grid">
+                <div class="swot-card swot-strengths">
+                    <h3>💪 Strengths</h3>
+                    <ul>
+                        <li>Largest verified farmer database (54M)</li>
+                        <li>WhatsApp-first engagement model</li>
+                        <li>Pan-India geographic coverage</li>
+                        <li>Focus on precision targeting</li>
+                        <li>Multi-language support</li>
+                        <li>Real-time campaign tracking</li>
+                        <li>Lower customer acquisition cost model</li>
+                    </ul>
+                </div>
+                
+                <div class="swot-card swot-weaknesses">
+                    <h3>⚠️ Weaknesses</h3>
+                    <ul>
+                        <li>Newer brand compared to DeHaat/AgroStar</li>
+                        <li>Limited physical presence (vs DeHaat's micro-entrepreneurs)</li>
+                        <li>Dependency on WhatsApp platform</li>
+                        <li>Need to build trust with traditional agri-brands</li>
+                        <li>Limited product transaction history</li>
+                        <li>Revenue diversification opportunities</li>
+                    </ul>
+                </div>
+                
+                <div class="swot-card swot-opportunities">
+                    <h3>🚀 Opportunities</h3>
+                    <ul>
+                        <li>Growing WhatsApp adoption in rural India</li>
+                        <li>Shift from dealer-dependent to direct marketing</li>
+                        <li>Increasing demand for targeted marketing</li>
+                        <li>Government push for digital agriculture</li>
+                        <li>Rising smartphone penetration</li>
+                        <li>Corporate agri-brands seeking efficiency</li>
+                        <li>Integration with e-commerce platforms</li>
+                    </ul>
+                </div>
+                
+                <div class="swot-card swot-threats">
+                    <h3>⚡ Threats</h3>
+                    <ul>
+                        <li>Large competitors expanding into marketing</li>
+                        <li>WhatsApp policy changes</li>
+                        <li>Technology infrastructure challenges</li>
+                        <li>Intense competition for farmer attention</li>
+                        <li>Economic downturns affecting agri-spending</li>
+                        <li>Regulatory changes in digital marketing</li>
+                        <li>Data privacy concerns</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div id="recommendations" class="tab-content">
+            <h2 class="section-title">Strategic Recommendations</h2>
+            
+            <div class="recommendation">
+                <h4>1. Leverage WhatsApp Advantage</h4>
+                <p>Position SmartU as the "WhatsApp-native" agri-marketing platform. Competitors are still app-dependent while WhatsApp has 400M+ users in India. This is your biggest differentiator.</p>
+            </div>
+            
+            <div class="recommendation">
+                <h4>2. Build Strategic Partnerships</h4>
+                <p>Form partnerships with existing agri-input companies like those working with DeHaat/AgroStar. Offer complementary marketing services rather than competing directly.</p>
+            </div>
+            
+            <div class="recommendation">
+                <h4>3. Expand Revenue Streams</h4>
+                <p>Consider adding data analytics and farmer insights services for agri-brands. Your 54M farmer database is valuable for market research beyond just marketing.</p>
+            </div>
+            
+            <div class="recommendation">
+                <h4>4. Focus on ROI Metrics</h4>
+                <p>Develop superior campaign tracking and ROI measurement tools. This is where traditional competitors are weak and agri-brands need the most help.</p>
+            </div>
+            
+            <div class="recommendation">
+                <h4>5. Build Trust Through Case Studies</h4>
+                <p>Develop detailed case studies showing cost savings and engagement improvements vs traditional marketing methods. Quantify the CAC reduction advantage.</p>
+            </div>
+            
+            <div class="insight-box">
+                <h3>🎯 Competitive Positioning Strategy</h3>
+                <p><strong>"The only precision agri-marketing platform that meets farmers where they are - on WhatsApp."</strong></p>
+                <p>While competitors focus on selling products to farmers, SmartU focuses on helping agri-brands sell better to farmers. This positions you as an enabler rather than a competitor to existing agri-businesses.</p>
+            </div>
+            
+            <div class="competitor-card">
+                <h3>📈 Key Performance Indicators to Track</h3>
+                <ul>
+                    <li><strong>Market Share:</strong> Percentage of agri-brands using SmartU vs competitors</li>
+                    <li><strong>Engagement Rate:</strong> WhatsApp response rates vs app/call center engagement</li>
+                    <li><strong>Customer Acquisition Cost:</strong> Cost per farmer reached vs traditional methods</li>
+                    <li><strong>Revenue per Campaign:</strong> Average campaign value and repeat business</li>
+                    <li><strong>Geographic Expansion:</strong> State-wise market penetration</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showTab(tabId) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all nav tabs
+            const navTabs = document.querySelectorAll('.nav-tab');
+            navTabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabId).classList.add('active');
+            
+            // Add active class to clicked nav tab
+            event.target.classList.add('active');
+        }
+        
+        // Add some interactive animations on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.competitor-card, .metric-card');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'fadeIn 0.6s ease-in';
+                    }
+                });
+            });
+            
+            cards.forEach(card => {
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
